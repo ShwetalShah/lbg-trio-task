@@ -47,7 +47,7 @@ environment {
  	cd flask-app
   	docker build -t trio-app:v1 .
    	cd ../db
-   	docker build -t trio-db:v1
+   	docker build -t trio-db:v1 .
      	'''	    
 	}	      
     }
