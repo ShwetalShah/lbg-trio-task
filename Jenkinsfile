@@ -1,5 +1,9 @@
 pipeline {
   agent any
+
+environment {
+	MYSQL_ROOT_PASSWORD = credentials('DB_PASSWORD')
+}
   stages {
     stage('cleanup') {
       steps {
@@ -23,20 +27,34 @@ pipeline {
               docker rm flask-app
 		      else
 		          sleep 1
-          fi           
+          fi
+	  if docker logs mysql; then
+            if docker exec mysql ls; then
+              docker stop mysql
+	else
+		1	
+  	fi
+        	docker rm mysql
+	else
+		leep 1
+        fi       
         '''
       }
     }
     stage('build') {
-      steps {
-        sh 'docker build -t trio-task:v1 .'
-      }
+	sh '''
+ 	cd flask-app
+  	docker build -t trio-app:v1 .
+   	cd ../db
+   	docker build -t trio-db:v1
+     	'''      
     }
     stage('run') {
       steps {
         sh '''
           docker network inspect trio-net && sleep 1 || docker network create trio-net
-          docker run -d --name flask-app --network trio-net trio-task:v1
+          docker run -d --network trio-net --name mysql -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} trio-db:v1
+	  docker run -d --network trio-net --name flask-app -e MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} trio-app:v1   
           docker run -d -p 80:80 --network trio-net --mount type=bind,source=$(pwd)/nginx.conf,target=/etc/nginx/nginx.conf --name nginx nginx:alpine
         '''
       }
