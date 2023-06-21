@@ -42,12 +42,14 @@ environment {
       }
     }
     stage('build') {
-	sh '''
+	steps{
+		sh '''
  	cd flask-app
   	docker build -t trio-app:v1 .
    	cd ../db
    	docker build -t trio-db:v1
-     	'''      
+     	'''	    
+	}	      
     }
     stage('run') {
       steps {
