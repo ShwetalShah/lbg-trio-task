@@ -32,11 +32,11 @@ environment {
             if docker exec mysql ls; then
               docker stop mysql
 	else
-		1	
+		sleep 1	
   	fi
         	docker rm mysql
 	else
-		leep 1
+		sleep 1
         fi       
         '''
       }
