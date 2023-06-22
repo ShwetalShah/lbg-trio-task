@@ -14,7 +14,7 @@ services:
       - trio-net
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-    depends on:
+    depends_on:
       - mysql    
   nginx:
     image: nginx:alpine
@@ -27,5 +27,7 @@ services:
       - type: bind
         source: ./nginx/nginx.conf
         target: /etc/nginx/nginx.conf
+    depends_on:
+      - flask-app
 networks:
   trio-net:
