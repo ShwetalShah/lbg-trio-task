@@ -23,7 +23,7 @@ services:
       - type: bind
         source: ./nginx.conf
         target: /etc/nginx/nginx.conf
-   trio-db:
+  trio-db:
     image: trio-db:v1
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
